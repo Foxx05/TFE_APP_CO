@@ -100,7 +100,7 @@ export default function ManageGreenhouses() {
       <Link to={`${import.meta.env.BASE_URL}addGreenhouse`} className="card--click">
         <button type="button">Add greenhouse</button>
       </Link>
-      <button type="button" onClick={sendProductionCsv}>
+      <button type="button" className="btn--csv" onClick={sendProductionCsv}>
         Send Production CSV by email
       </button>
 

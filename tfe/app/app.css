@@ -224,3 +224,7 @@ button, .btn--back{
   font-size: 14px;
   margin: 0;
 }
+
+.btn--csv{
+  margin-bottom: 12px;
+}
