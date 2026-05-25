@@ -77,7 +77,7 @@ export default function Home() {
         <Link to={`${import.meta.env.BASE_URL}manageGreenhouses`} className="card--click card--home">
           <Card>
             <p className="p--small">Manage</p>
-            <p className="p--big">Greenhouses</p>
+            <p className="p--big">your farm</p>
           </Card>
         </Link>
       </div>
