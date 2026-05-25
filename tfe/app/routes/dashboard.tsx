@@ -5,63 +5,57 @@ import { useEffect, useState } from "react";
 import Card from "../components/card";
 
 export default function Home() {
- const navigate = useNavigate();
+  const navigate = useNavigate();
+  const [currentUser, setCurrentUser] = useState<string | null>(null);
 
-const [currentUser, setCurrentUser] = useState<string | null>(null);
-type Greenhouse = {
-  greenhouse_id: number;
-  name: string;
-};
-const [greenhouses, setGreenhouses] = useState<Greenhouse[]>([]);
-const [readyStrawberries, setReadyStrawberries] = useState(0);
-useEffect(() => {
-  async function checkUser() {
-    const result = await getCurrentUser();
+  type Greenhouse = {
+    greenhouse_id: number;
+    name: string;
+  };
 
-    if (!result.success) {
-      navigate("/");
-      return;
+  const [greenhouses, setGreenhouses] = useState<Greenhouse[]>([]);
+  const [readyStrawberries, setReadyStrawberries] = useState(0);
+
+  useEffect(() => {
+    async function checkUser() {
+      const result = await getCurrentUser();
+
+      if (!result.success) {
+        navigate("/");
+        return;
+      }
+
+      setCurrentUser(result.user.username);
+      const greenhousesResult = await getUserGreenhouses();
+      if (greenhousesResult.success) {
+        setGreenhouses(greenhousesResult.greenhouses);
+      }
+      const readyResponse = await fetch("https://theocolpaert.be/projets/tfe_app/backend/get_ready_strawberries.php", {credentials: "include",});
+      const readyResult = await readyResponse.json();
+
+      if (readyResult.success) {
+        setReadyStrawberries(readyResult.ready_strawberries);
+      }
     }
-    setCurrentUser(result.user.username);
-    const greenhousesResult = await getUserGreenhouses();
-    if (greenhousesResult.success) {
-      setGreenhouses(greenhousesResult.greenhouses);
-    }
-    const readyResponse = await fetch(
-  "https://theocolpaert.be/projets/tfe_app/backend/get_ready_strawberries.php",
-  {
-    credentials: "include",
-  }
-);
 
-const readyResult = await readyResponse.json();
+    checkUser();
 
-if (readyResult.success) {
-  setReadyStrawberries(readyResult.ready_strawberries);
-}
-    
-
-
-  }
-
-  checkUser();
-}, []);
+  }, []);
 
   return (
     <>
       <div className="section--logo">
         <img className="img--logo" src={import.meta.env.BASE_URL + "logo.svg"} alt="Logo de l'entreprise BerryCam"/>
-        
         <p className="p--logo">BerryCam</p>
       </div>
       <div className="section--user">
         <p className="p--small">Connected as {currentUser}</p>
         <button
-            onClick={async () => {
-                await logoutUser();
-                navigate(`${import.meta.env.BASE_URL}`);
-            }}>               
-            Logout
+          onClick={async () => {
+            await logoutUser();
+            navigate(`${import.meta.env.BASE_URL}`);
+          }}>
+          Logout
         </button>
       </div>
 
@@ -71,35 +65,27 @@ if (readyResult.success) {
       </p>
 
       <div className="grid">
-         {greenhouses.map((greenhouse) => (
-    <Link
-      key={greenhouse.greenhouse_id}
-      to={`${import.meta.env.BASE_URL}greenhouseData/${greenhouse.greenhouse_id}`}
-      className="card--click card--home"
-    >
-      <Card>
-        <p className="p--small">See datas for</p>
-        <p className="p--big">{greenhouse.name}</p>
-      </Card>
-    </Link>
-  ))}
+        {greenhouses.map((greenhouse) => (
+          <Link key={greenhouse.greenhouse_id} to={`${import.meta.env.BASE_URL}greenhouseData/${greenhouse.greenhouse_id}`} className="card--click card--home">
+            <Card>
+              <p className="p--small">See datas for</p>
+              <p className="p--big">{greenhouse.name}</p>
+            </Card>
+          </Link>
+        ))}
 
-
-       <Link
-  to={`${import.meta.env.BASE_URL}manageGreenhouses`}
-  className="card--click card--home"
->
-  <Card>
-    <p className="p--small">Manage</p>
-    <p className="p--big">Greenhouses</p>
-  </Card>
-</Link>
+        <Link to={`${import.meta.env.BASE_URL}manageGreenhouses`} className="card--click card--home">
+          <Card>
+            <p className="p--small">Manage</p>
+            <p className="p--big">Greenhouses</p>
+          </Card>
+        </Link>
       </div>
 
       <Card>
-          <p className="p--small">Currently</p>
-          <p className="p--big">{readyStrawberries} strawberries</p>
-          <p className="p--small"> are ready to get picked up</p>
+        <p className="p--small">Currently</p>
+        <p className="p--big">{readyStrawberries} strawberries</p>
+        <p className="p--small"> are ready to get picked up</p>
       </Card>
     </>
   );

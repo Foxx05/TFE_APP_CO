@@ -10,5 +10,4 @@ export default [
   route("projets/tfe_app/addGreenhouse", "./routes/addGreenhouse.tsx"),
   route("projets/tfe_app/manageGreenhouses", "./routes/manageGreenhouses.tsx"),
   route("projets/tfe_app/editGreenhouse/:id", "./routes/editGreenhouse.tsx"),
-  
 ] satisfies RouteConfig;
