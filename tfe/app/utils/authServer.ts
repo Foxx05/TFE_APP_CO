@@ -71,14 +71,15 @@ export async function resetPassword(token: string, password: string) {
 
   return response.json();
 }
-export async function getUserGreenhouses() {
-    const response = await fetch(
-        `${import.meta.env.BASE_URL}backend/get_greenhouses.php`,
-        {
-            method: "GET",
-            credentials: "include"
-        }
-    );
 
-    return await response.json();
+export async function getUserGreenhouses() {
+  const response = await fetch(
+    `${import.meta.env.BASE_URL}backend/get_greenhouses.php`,
+    {
+      method: "GET",
+      credentials: "include"
+    }
+  );
+
+  return await response.json();
 }
