@@ -418,19 +418,6 @@ const fruitStageData = buildFruitStageData(historyData);
                     </select>
                 </label>
 
-                <button type="button" onClick={() => setCompareMode((prev) => !prev)}>
-                    {compareMode ? "Disable comparison" : "Compare with another season"}
-                </button>
-
-                {compareMode && (
-                    <input
-                        type="number"
-                        placeholder="Example: 2025"
-                        value={compareYear}
-                        onChange={(e) => setCompareYear(e.target.value)}
-                    />
-                )}
-
                 </Card>
                     <LineChart
                         title={`Temperature over ${rangeLabel}`}
