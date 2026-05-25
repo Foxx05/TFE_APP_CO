@@ -25,9 +25,9 @@ export default function ManageGreenhouses() {
     loadGreenhouses();
   }, []);
 
-const [message, setMessage] = useState("");
+  const [message, setMessage] = useState("");
 
-async function sendProductionCsv() {
+  async function sendProductionCsv() {
   setError("");
   setMessage("");
 
@@ -47,7 +47,7 @@ async function sendProductionCsv() {
   }
 
   setMessage("CSV successfully sent by email");
-}
+  }
 
 
   async function deleteGreenhouse(id: number) {
@@ -82,16 +82,17 @@ async function sendProductionCsv() {
 
   return (
     <>
-        <div className="top--nav">
-                <div className="section--logo">
-                    <img className="img--logo" src={import.meta.env.BASE_URL + "logo.svg"} alt="Logo de l'entreprise BerryCam"/>
-                    <p className="p--logo">BerryCam</p>
-                </div>
+      <div className="top--nav">
+        <div className="section--logo">
+          <img className="img--logo" src={import.meta.env.BASE_URL + "logo.svg"} alt="Logo de l'entreprise BerryCam"/>
+          <p className="p--logo">BerryCam</p>
+        </div>
 
-                <Link to={`${import.meta.env.BASE_URL}dashboard`} className="btn--back">
-                    Back
-                </Link>
-            </div>
+        <Link to={`${import.meta.env.BASE_URL}dashboard`} className="btn--back">
+            Back
+        </Link>
+      </div>
+
       <h1 className="section--title__big">Manage greenhouses</h1>
 
       {error && <p className="auth--error">{error}</p>}
@@ -100,26 +101,21 @@ async function sendProductionCsv() {
         <button type="button">Add greenhouse</button>
       </Link>
       <button type="button" onClick={sendProductionCsv}>
-  Send Production CSV by email
-</button>
+        Send Production CSV by email
+      </button>
 
-{message && <p className="auth--success">{message}</p>}
+      {message && <p className="auth--success">{message}</p>}
 
       <div className="card--gap">
         {greenhouses.map((greenhouse) => (
           <div className="card" key={greenhouse.greenhouse_id}>
             <p className="p--big">{greenhouse.name}</p>
 
-            <Link
-              to={`${import.meta.env.BASE_URL}editGreenhouse/${greenhouse.greenhouse_id}`}
-            >
+            <Link to={`${import.meta.env.BASE_URL}editGreenhouse/${greenhouse.greenhouse_id}`}>
               <button type="button">Edit</button>
             </Link>
 
-            <button
-              type="button"
-              onClick={() => deleteGreenhouse(greenhouse.greenhouse_id)}
-            >
+            <button type="button" onClick={() => deleteGreenhouse(greenhouse.greenhouse_id)}>
               Delete
             </button>
           </div>
