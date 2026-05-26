@@ -51,8 +51,7 @@ export default function Home() {
       </div>
       <div className="section--user">
         <p className="p--small">Connected as {currentUser}</p>
-        <button
-          onClick={async () => {
+        <button className="btn--logout" onClick={async () => {
             await logoutUser();
             navigate(`${import.meta.env.BASE_URL}`);
           }}>
