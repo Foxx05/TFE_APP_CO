@@ -118,6 +118,7 @@ h1{
 .card--home{
   height: 100%;
 }
+
 select{
   width: 100%;
   border: 1px solid #753443;
@@ -128,6 +129,7 @@ select{
   color: #753443;
   margin-top: 8px;
 }
+
 .p--big{
   font-size: 27px;
   margin: 20px 0;
@@ -229,10 +231,76 @@ button, .btn--back{
   margin-bottom: 12px;
 }
 
-@media (min-width: 768px){
-  
+.p--avg{
+  margin-top: 12px;
 }
 
-@media (min-width: 1250spx){
+@media (min-width: 768px){
+
+  h1{
+    font-size: 27px;
+  }
+
+  .phone-frame{
+    max-width: 768px;
+  }
+
+  .inside-phone{
+    padding: 120px;
+  }
+
+  .section--title__big{
+    left: -140px;
+    width: calc(100% + 280px);
+  }
+
+  .top--nav{
+    gap: 100px;
+  }
+
+  .section--logo{
+    gap: 16px;
+  }
+
+  .img--logo{
+    width: 45px;
+  }
+
+  .grid{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+
+  .card--gap{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .p--big, .p--logo{
+    font-size: 36px;
+  }
+
+  .p--big{
+    margin: 30px 0;
+  }
+
+  .p--small, .p--intro{
+    font-size: 20px;
+  }
+
+  .p--avg{
+    margin-top: 30px;
+  }
+
+  
+  .svg--weather{
+    margin-top: 28px;
+  }
+}
+
+@media (min-width: 1250px){
 
 }

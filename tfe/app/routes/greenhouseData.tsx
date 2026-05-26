@@ -324,7 +324,7 @@ const fruitStageData = buildFruitStageData(historyData);
                         <Gauge />
 
                         {showDetails && (
-                            <p className="p--small" style={{ marginTop: "12px" }}>
+                            <p className="p--small p--avg">
                                 Avg last 24h:{" "}
                                 {tempAverage != null ? `${tempAverage.toFixed(1)}°C` : "--"}
                             </p>
@@ -339,7 +339,7 @@ const fruitStageData = buildFruitStageData(historyData);
                         <Gauge />
 
                         {showDetails && (
-                        <p className="p--small" style={{ marginTop: "12px" }}>
+                        <p className="p--small p--avg">
                             Avg last 24h:{" "}
                             {sunRateAverage != null ? `${sunRateAverage.toFixed(1)} Lx` : "--"}
                         </p>
@@ -354,7 +354,7 @@ const fruitStageData = buildFruitStageData(historyData);
                         <Gauge />
 
                         {showDetails && (
-                            <p className="p--small" style={{ marginTop: "12px" }}>
+                            <p className="p--small p--avg">
                                 Avg last 24h:{" "}
                                 {humidityAverage != null ? `${humidityAverage.toFixed(1)} %` : "--"}
                             </p>
@@ -370,7 +370,7 @@ const fruitStageData = buildFruitStageData(historyData);
                         </div>
 
                         {showDetails && (
-                            <p className="p--small" style={{ marginTop: "12px" }}>
+                            <p className="p--small p--avg">
                                 Avg last 24h:{" "}
                                 {pressureAverage != null ? `${pressureAverage.toFixed(1)} hPa` : "--"}
                             </p>
