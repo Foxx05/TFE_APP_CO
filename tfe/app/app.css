@@ -106,6 +106,8 @@ h1{
 .card--manage{
   background: #753443;
   color: #fafafa;
+  background-image: url("/images/gear.svg");
+  background-repeat: no-repeat;
 }
 
 .card--click, button, a, .btn--back{
