@@ -3,6 +3,7 @@ import { getCurrentUser, logoutUser ,getUserGreenhouses} from "../utils/authServ
 import { Link } from "react-router";
 import { useEffect, useState } from "react";
 import Card from "../components/card";
+import CardManage from "../components/cardManage";
 
 export default function Home() {
   const navigate = useNavigate();
@@ -61,7 +62,7 @@ export default function Home() {
 
       <h1 className="section--title__big">Your exploitation</h1>
       <p className="p--intro">
-         You have {greenhouses.length} greenhouse{greenhouses.length > 1 ? "s" : ""} in your exploitation. See the details below.
+         You have {greenhouses.length} greenhouse{greenhouses.length > 1 ? "s" : ""} in your exploitation. See the details&nbsp;below.
       </p>
 
       <div className="grid">
@@ -75,10 +76,10 @@ export default function Home() {
         ))}
 
         <Link to={`${import.meta.env.BASE_URL}manageGreenhouses`} className="card--click card--home">
-          <Card>
+          <CardManage>
             <p className="p--small">Manage</p>
             <p className="p--big">your farm</p>
-          </Card>
+          </CardManage>
         </Link>
       </div>
 

@@ -94,13 +94,18 @@ h1{
   gap: 12px;
 }
 
-.card{
+.card, .card--manage{
   background: #fafafa;
   border-radius: 8px;
   padding: 15px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
   text-align: center;
   overflow: hidden;
+}
+
+.card--manage{
+  background: #753443;
+  color: #fafafa;
 }
 
 .card--click, button, a, .btn--back{
