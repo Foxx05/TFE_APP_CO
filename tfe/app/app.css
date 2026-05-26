@@ -108,6 +108,7 @@ h1{
   color: #fafafa;
   background-image: url("/images/gear.svg");
   background-repeat: no-repeat;
+  background-position: center;
 }
 
 .card--click, button, a, .btn--back{
