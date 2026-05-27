@@ -50,7 +50,6 @@ export default function Home() {
         <p className="p--logo">BerryCam</p>
       </div>
       <div className="section--user">
-        <p className="p--small">Connected as {currentUser}</p>
         <button className="btn--logout" onClick={async () => {
             await logoutUser();
             navigate(`${import.meta.env.BASE_URL}`);
