@@ -102,10 +102,19 @@ export default function Index() {
         ? `${Number(data.temperature_air_c).toFixed(1)}°C`
         : "--";
 
-    const sunlight =
-        data?.lux != null
-        ? `${Number(data.lux).toFixed(1)} Lx`
-        : "--";
+    const sunlight = (() => {
+
+        if (data?.lux == null) return "--";
+
+        const lux = Number(data.lux);
+
+        if (lux >= 1000) {
+            return `${(lux / 1000).toFixed(1).replace(".0", "")}k Lx`;
+        }
+
+        return `${lux.toFixed(0)} Lx`;
+
+    })();
 
     const humidity =
         data?.humidity_pct != null
@@ -336,7 +345,7 @@ export default function Index() {
                     <Card>
                         <p className="p--small">Sunlight rate</p>
                         <p className="p--big">{sunlight}</p>
-                        {/* <Gauge /> */}
+                        <Gauge value={data?.lux != null ? Number(data.lux) : null} min={0} max={40000}/>
 
                         {showDetails && (
                         <p className="p--small p--avg">
