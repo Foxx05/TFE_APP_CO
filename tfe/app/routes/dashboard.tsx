@@ -45,11 +45,12 @@ export default function Home() {
 
   return (
     <>
-      <div className="section--logo">
-        <img className="img--logo" src={import.meta.env.BASE_URL + "logo.svg"} alt="Logo de l'entreprise BerryCam"/>
-        <p className="p--logo">BerryCam</p>
-      </div>
-      <div className="section--user">
+      <div className="top--nav">
+        <div className="section--logo">
+          <img className="img--logo" src={import.meta.env.BASE_URL + "logo.svg"} alt="Logo de l'entreprise BerryCam"/>
+          <p className="p--logo">BerryCam</p>
+        </div>
+        
         <button className="btn--logout" onClick={async () => {
             await logoutUser();
             navigate(`${import.meta.env.BASE_URL}`);

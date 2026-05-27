@@ -217,13 +217,6 @@ button, .btn--back{
   height: 35px;
 }
 
-.section--user{
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 40px;
-}
-
 .btn--logout{
   width: 100px;
   margin-top: 0;
