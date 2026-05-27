@@ -137,11 +137,16 @@ export default function EditGreenhouse() {
 
         <label>
           Orientation
-          <input
-            value={orientation}
-            onChange={(e) => setOrientation(e.target.value)}
-            placeholder="North-South"
-          />
+          <select value={orientation} onChange={(e) => setOrientation(e.target.value)}>
+            <option value="north">North</option>
+            <option value="northeast">Northeast</option>
+            <option value="east">East</option>
+            <option value="southeast">Southeast</option>
+            <option value="south">South</option>
+            <option value="southwest">Southwest</option>
+            <option value="west">West</option>
+            <option value="nortwest">Nortwest</option>
+          </select>
         </label>
 
         {error && <p className="auth--error">{error}</p>}
