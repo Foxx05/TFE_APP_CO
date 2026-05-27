@@ -285,6 +285,10 @@ button, .btn--back{
   margin-top: 8px;
 }
 
+.display--period{
+  margin-top: "12px";
+}
+
 @media (min-width: 768px){
 
   h1{

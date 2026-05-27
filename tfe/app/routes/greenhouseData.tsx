@@ -412,15 +412,10 @@ export default function Index() {
                 <label>
                     Display period
 
-                    <select
-                        value={range}
-                        onChange={(e) => setRange(e.target.value)}
-                        style={{ marginTop: "12px" }}
-                        >
+                    <select className="display--period" value={range} onChange={(e) => setRange(e.target.value)}>
                         <option value="day">Day</option>
                         <option value="week">Week</option>
                         <option value="month">Month</option>
-                        <option value="season">Season</option>
                     </select>
                 </label>
 
