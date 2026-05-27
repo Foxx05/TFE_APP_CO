@@ -217,6 +217,11 @@ button, .btn--back{
   height: 35px;
 }
 
+.btn--back{
+  width: 35px;
+  align-items: start;
+}
+
 .btn--logout{
   width: 100px;
   margin-top: 0;
