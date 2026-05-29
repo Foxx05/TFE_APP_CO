@@ -107,6 +107,7 @@ h1{
   background: #753443;
   color: #fafafa;
   background-image: url("/images/gear.svg");
+  background-size: 60%;
   background-repeat: no-repeat;
   background-position: center;
 }
