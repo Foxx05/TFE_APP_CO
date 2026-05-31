@@ -18,11 +18,21 @@ export default function Root() {
     <html lang="en">
       <head>
         <Links/>
-        <link rel="icon" type="image/svg+xml" href={import.meta.env.BASE_URL + "logo.svg"} />
+        <link rel="icon" href={`${import.meta.env.BASE_URL}/logo.ico`} />
+
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content="The app linked to my final project in my senior year of the Web and Transmedia program at HEAJ" />
+        <meta property="og:site_name" content="Berrycam App — Théo Colpaert" />
+        <meta property="og:title" content="Berrycam App" />
+        <meta property="og:description" content="The app linked to my final project in my senior year of the Web and Transmedia program at HEAJ" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://theocolpaert.be/projets/tfe_app/" />
+        <meta property="og:image" content="https://theocolpaert.be/projets/tfe_app/logo.svg" />
+        <meta property="og:image:width" content="1800" />
+        <meta property="og:image:height" content="945" />
 
-        <title>TFE</title>
+        <title>Berrycam App - TFE</title>
       </head>
       <body>
         <div className="phone-frame">
