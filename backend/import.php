@@ -1,40 +1,18 @@
 <?php
 
 header("Content-Type: application/json; charset=UTF-8");
-header("Access-Control-Allow-Origin: *");
-
-$host = 'theocortheocorwp.mysql.db';
-$dbname = 'theocortheocorwp';
-$user = 'theocortheocorwp';
-$pass = 'theocorWP5150';
+require_once __DIR__ . "/config.php";
 
 $greenhouseId = isset($_GET['greenhouse_id']) ? (int)$_GET['greenhouse_id'] : 1;
 $range = $_GET['range'] ?? 'season';
-$compareYear = isset($_GET['compare_year']) ? (int)$_GET['compare_year'] : null;
-$limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 100;
-
-if ($limit < 10) {
-    $limit = 10;
-}
-if ($limit > 1000) {
-    $limit = 1000;
-}
+$offset = isset($_GET['offset']) ? (int)$_GET['offset'] : 0;
 
 try {
-    $pdo = new PDO(
-        "mysql:host=$host;dbname=$dbname;charset=utf8mb4",
-        $user,
-        $pass,
-        [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-        ]
-    );
     $stmtYear = $pdo->prepare("
-    SELECT MAX(YEAR(captured_at)) AS latest_year
-    FROM production_snapshots
-    WHERE greenhouse_id = :greenhouse_id
-");
+        SELECT MAX(YEAR(captured_at)) AS latest_year
+        FROM production_snapshots
+        WHERE greenhouse_id = :greenhouse_id
+    ");
 
 $stmtYear->execute([
     ':greenhouse_id' => $greenhouseId
@@ -46,14 +24,24 @@ if (!$latestYear) {
         'success' => true,
         'greenhouse_id' => $greenhouseId,
         'season_year' => null,
-        'compare_year' => $compareYear,
         'last' => null,
         'history' => [],
-        'compare_history' => [],
         'monthly_production' => []
     ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     exit;
 }
+
+$stmtMaxDate = $pdo->prepare("
+    SELECT MAX(captured_at)
+    FROM production_snapshots
+    WHERE greenhouse_id = :greenhouse_id
+");
+
+$stmtMaxDate->execute([
+    ':greenhouse_id' => $greenhouseId
+]);
+
+$latestDate = $stmtMaxDate->fetchColumn();
 
 $dateCondition = "YEAR(captured_at) = :year";
 $dateParams = [
@@ -61,32 +49,43 @@ $dateParams = [
     ':year' => $latestYear
 ];
 
-if ($range === "day") {
-    $dateCondition .= " AND captured_at >= DATE_SUB((
-        SELECT MAX(captured_at)
-        FROM production_snapshots
-        WHERE greenhouse_id = :greenhouse_id
-    ), INTERVAL 24 HOUR)";
+$startDate = null;
+$endDate = null;
+
+if ($range === "day" || $range === "week" || $range === "month") {
+    $baseDate = new DateTime($latestDate);
+
+    if ($range === "day") {
+        $baseDate->modify(($offset * 24) . " hours");
+        $endDate = clone $baseDate;
+        $startDate = clone $baseDate;
+        $startDate->modify("-24 hours");
+    }
+
+    if ($range === "week") {
+        $baseDate->modify(($offset * 7) . " days");
+        $endDate = clone $baseDate;
+        $startDate = clone $baseDate;
+        $startDate->modify("-7 days");
+    }
+
+    if ($range === "month") {
+        $baseDate->modify($offset . " months");
+        $endDate = clone $baseDate;
+        $startDate = clone $baseDate;
+        $startDate->modify("-1 month");
+    }
+
+    $dateCondition = "captured_at >= :start_date AND captured_at <= :end_date";
+
+    $dateParams = [
+        ':greenhouse_id' => $greenhouseId,
+        ':start_date' => $startDate->format("Y-m-d H:i:s"),
+        ':end_date' => $endDate->format("Y-m-d H:i:s")
+    ];
 }
 
-if ($range === "week") {
-    $dateCondition .= " AND captured_at >= DATE_SUB((
-        SELECT MAX(captured_at)
-        FROM production_snapshots
-        WHERE greenhouse_id = :greenhouse_id
-    ), INTERVAL 7 DAY)";
-}
-
-if ($range === "month") {
-    $dateCondition .= " AND captured_at >= DATE_SUB((
-        SELECT MAX(captured_at)
-        FROM production_snapshots
-        WHERE greenhouse_id = :greenhouse_id
-    ), INTERVAL 1 MONTH)";
-}
-
-    // Dernière mesure
-   // Dernière mesure
+// Dernière mesure
 $stmtLast = $pdo->prepare("
     SELECT
         ps.id,
@@ -138,80 +137,85 @@ $stmtHistory = $pdo->prepare("
 $stmtHistory->execute($dateParams);
 $rows = $stmtHistory->fetchAll();
 
-    
+ $hasPrevious = false;
 
-    // Production mensuelle
-    $stmtMonthly = $pdo->prepare("
-        SELECT
-            DATE_FORMAT(day_date, '%Y-%m') AS month_key,
-            MAX(day_total) AS month_end_total
-        FROM (
-            SELECT
-                DATE(captured_at) AS day_date,
-                MAX(harvest_total) AS day_total
-            FROM production_snapshots
-            WHERE greenhouse_id = :greenhouse_id AND YEAR(captured_at) = :year
-            GROUP BY DATE(captured_at)
-        ) daily
-        GROUP BY DATE_FORMAT(day_date, '%Y-%m')
-        ORDER BY month_key ASC
-    ");
-    $stmtMonthly->execute([
-        ':greenhouse_id' => $greenhouseId,
-        ':year' => $latestYear
-    ]);
-    $monthlyRaw = $stmtMonthly->fetchAll();
+if ($startDate !== null) {
+    $previousEnd = clone $startDate;
+    $previousStart = clone $startDate;
 
-    $monthlyProduction = [];
-    $prevMonthEnd = 0;
-
-    foreach ($monthlyRaw as $row) {
-        $monthKey = $row['month_key'];
-        $monthEnd = (int)$row['month_end_total'];
-
-        $produced = $monthEnd - $prevMonthEnd;
-
-        $monthlyProduction[] = [
-            'label' => $monthKey,
-            'value' => max(0, $produced)
-        ];
-
-        $prevMonthEnd = $monthEnd;
+    if ($range === "day") {
+        $previousStart->modify("-24 hours");
     }
-$compareRows = [];
 
-if ($compareYear) {
-    $stmtCompare = $pdo->prepare("
-        SELECT
-            captured_at,
-            flowers_white,
-            fruits_green,
-            fruits_yellow,
-            fruits_red,
-            status,
-            temperature_air_c,
-            humidity_pct,
-            pressure_hpa,
-            lux,
-            harvested_now,
-            harvest_total
+    if ($range === "week") {
+        $previousStart->modify("-7 days");
+    }
+
+    if ($range === "month") {
+        $previousStart->modify("-1 month");
+    }
+
+    $stmtPrevious = $pdo->prepare("
+        SELECT COUNT(*)
         FROM production_snapshots
         WHERE greenhouse_id = :greenhouse_id
-        AND YEAR(captured_at) = :compare_year
-        ORDER BY captured_at ASC
+        AND captured_at >= :previous_start
+        AND captured_at < :previous_end
     ");
 
-    $stmtCompare->execute([
+    $stmtPrevious->execute([
         ':greenhouse_id' => $greenhouseId,
-        ':compare_year' => $compareYear
+        ':previous_start' => $previousStart->format("Y-m-d H:i:s"),
+        ':previous_end' => $previousEnd->format("Y-m-d H:i:s")
     ]);
 
-    $compareRows = $stmtCompare->fetchAll();
+    $hasPrevious = ((int)$stmtPrevious->fetchColumn()) > 0;
 }
+$hasNext = $offset < 0;   
+
+// Production mensuelle
+$stmtMonthly = $pdo->prepare("
+    SELECT
+        DATE_FORMAT(day_date, '%Y-%m') AS month_key,
+        MAX(day_total) AS month_end_total
+    FROM (
+        SELECT
+            DATE(captured_at) AS day_date,
+            MAX(harvest_total) AS day_total
+        FROM production_snapshots
+        WHERE greenhouse_id = :greenhouse_id AND YEAR(captured_at) = :year
+        GROUP BY DATE(captured_at)
+    ) daily
+    GROUP BY DATE_FORMAT(day_date, '%Y-%m')
+    ORDER BY month_key ASC
+");
+$stmtMonthly->execute([
+    ':greenhouse_id' => $greenhouseId,
+    ':year' => $latestYear
+]);
+$monthlyRaw = $stmtMonthly->fetchAll();
+
+$monthlyProduction = [];
+$prevMonthEnd = 0;
+
+foreach ($monthlyRaw as $row) {
+    $monthKey = $row['month_key'];
+    $monthEnd = (int)$row['month_end_total'];
+
+    $produced = $monthEnd - $prevMonthEnd;
+
+    $monthlyProduction[] = [
+        'label' => $monthKey,
+        'value' => max(0, $produced)
+    ];
+
+    $prevMonthEnd = $monthEnd;
+}
+
 
 $stmtSeasonHarvest = $pdo->prepare("
     SELECT
-        COALESCE(MAX(harvest_total), 0) - COALESCE(MIN(harvest_total), 0) AS season_harvest_total
+    COALESCE(MAX(harvest_total), 0) - COALESCE(MIN(harvest_total), 0) AS season_harvest_total
     FROM production_snapshots
     WHERE greenhouse_id = :greenhouse_id
     AND YEAR(captured_at) = :year
@@ -227,10 +231,11 @@ $seasonHarvestTotal = (int)$stmtSeasonHarvest->fetchColumn();
     'success' => true,
     'greenhouse_id' => $greenhouseId,
     'season_year' => $latestYear,
-    'compare_year' => $compareYear,
+    'offset' => $offset,
+    'has_previous' => $hasPrevious,
+    'has_next' => $hasNext,
     'last' => $lastRow,
     'history' => $rows,
-    'compare_history' => $compareRows,
     'monthly_production' => $monthlyProduction,
     'season_harvest_total' => $seasonHarvestTotal
 ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);

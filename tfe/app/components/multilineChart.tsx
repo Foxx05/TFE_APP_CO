@@ -30,11 +30,19 @@ type MultiLinePoint = {
 type Props = {
   title: string;
   data: MultiLinePoint[];
+  onPrevious: () => void;
+  onNext: () => void;
+  disablePrevious: boolean;
+  disableNext: boolean;
 };
 
 export default function MultiLineChart({
   title,
   data,
+  onPrevious,
+  onNext,
+  disablePrevious,
+  disableNext,
 }: Props) {
 
   const chartData = {
@@ -73,18 +81,39 @@ export default function MultiLineChart({
   };
 
   return (
-    <>
-      <h1>{title}</h1>
+    <div className="multiline--chart">
+      <div className="line--chart__header">
+        <button className="line--chart__button" onClick={onPrevious} disabled={disablePrevious}>
+          <svg width="18" height="18" viewBox="0 0 16 16">
+            <path d="M11 2 L5 8 L11 14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </button>
 
-      <div style={{ height: "300px" }}>
+        <h3 className="line--chart__title">{title}</h3>
+
+        <button className="line--chart__button" onClick={onNext} disabled={disableNext}>
+          <svg width="18" height="18" viewBox="0 0 16 16">
+            <path d="M5 2 L11 8 L5 14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <div className="multiline--chart__canvas">
         <Line
           data={chartData}
           options={{
             responsive: true,
             maintainAspectRatio: false,
+            elements: {
+              point: {
+                radius: 0,
+                hoverRadius: 4,
+              }
+            },
+          
           }}
         />
       </div>
-    </>
+    </div>
   );
 }

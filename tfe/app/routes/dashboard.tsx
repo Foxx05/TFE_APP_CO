@@ -2,8 +2,8 @@ import { useNavigate } from "react-router";
 import { getCurrentUser, logoutUser ,getUserGreenhouses} from "../utils/authServer";
 import { Link } from "react-router";
 import { useEffect, useState } from "react";
-import Card from "../components/card";
-import CardManage from "../components/cardManage";
+import Card from "../components/Card";
+import CardManage from "../components/CardManage";
 
 export default function Home() {
   const navigate = useNavigate();
