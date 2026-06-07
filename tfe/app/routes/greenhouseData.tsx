@@ -377,8 +377,8 @@ const fruitStageData = buildFruitStageData(historyData);
                 <div className="card--click" onClick={() => setShowDetails((prev) => !prev)}>
                     <Card>
                         <p className="p--small">Weather</p>
-                        <div style={{ display: "flex", justifyContent: "center", marginTop: "8px" }}>
-                        <WeatherIcon type={weatherType} size={60} />
+                        <div className="div--weather">
+                            <WeatherIcon type={weatherType} size={60} />
                         </div>
 
                         {showDetails && (
