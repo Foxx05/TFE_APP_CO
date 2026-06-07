@@ -31,7 +31,7 @@ export default function Home() {
       if (greenhousesResult.success) {
         setGreenhouses(greenhousesResult.greenhouses);
       }
-      const readyResponse = await fetch("https://theocolpaert.be/projets/tfe_app/backend/get_ready_strawberries.php", {credentials: "include",});
+      const readyResponse = await fetch( `${import.meta.env.BASE_URL}backend/get_ready_strawberries.php`, {credentials: "include",});
       const readyResult = await readyResponse.json();
 
       if (readyResult.success) {

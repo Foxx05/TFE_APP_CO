@@ -32,7 +32,7 @@ export default function ManageGreenhouses() {
   setMessage("");
 
   const response = await fetch(
-    "https://theocolpaert.be/projets/tfe_app/backend/send_production_csv.php",
+    `${import.meta.env.BASE_URL}backend/send_production_csv.php`,
     {
       method: "POST",
       credentials: "include",
@@ -55,7 +55,7 @@ export default function ManageGreenhouses() {
     if (!confirmDelete) return;
 
     const response = await fetch(
-      "https://theocolpaert.be/projets/tfe_test6/backend/delete_greenhouse.php",
+      `${import.meta.env.BASE_URL}backend/delete_greenhouse.php`,
       {
         method: "POST",
         credentials: "include",
